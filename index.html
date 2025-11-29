@@ -24,12 +24,17 @@
     </div>
 
     <div class="container">
-        <!-- BARRA DI RICERCA -->
+        <!-- BARRA DI RICERCA + SUGGERIMENTI -->
         <div class="search-container">
             <input type="text" 
                    class="search-input" 
+                   id="input-ricerca"
                    placeholder="Cerca una ricetta (es. Carbonara, Pesce, Dolce...)" 
-                   oninput="cercaRicette(this.value)">
+                   oninput="gestisciInput(this.value)"
+                   autocomplete="off">
+            
+            <!-- Qui appariranno i suggerimenti -->
+            <div id="suggerimenti-box" class="suggestions-box"></div>
         </div>
 
         <!-- FILTRI -->
@@ -59,24 +64,87 @@
             .catch(error => console.error('Errore:', error));
 
 
-        // --- FUNZIONE DI RICERCA ---
-        function cercaRicette(testo) {
-            // Convertiamo tutto in minuscolo per una ricerca senza errori
+        // --- FUNZIONE UNICA CHE GESTISCE L'INPUT ---
+        function gestisciInput(testo) {
             const testoPulito = testo.toLowerCase().trim();
-
-            // Resettiamo visivamente i bottoni categoria perché stiamo facendo una ricerca libera
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
             
-            // MODIFICA: Filtriamo SOLO controllando il titolo
-            const ricetteFiltrate = tutteLeRicette.filter(r => {
-                return r.titolo.toLowerCase().includes(testoPulito);
-            });
+            // 1. Aggiorna la griglia (Filtro per TITOLO)
+            const ricetteFiltrate = tutteLeRicette.filter(r => r.titolo.toLowerCase().includes(testoPulito));
+            
+            // Resetta bottoni filtri
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
 
+            // Mostra risultati griglia
             mostraRicette(ricetteFiltrate);
+
+            // 2. Aggiorna i Suggerimenti (Autocomplete)
+            mostraSuggerimenti(testoPulito, ricetteFiltrate);
         }
 
 
-        // --- FUNZIONE GENERA FILTRI ---
+        // --- FUNZIONE PER MOSTRARE I SUGGERIMENTI ---
+        function mostraSuggerimenti(testo, risultati) {
+            const box = document.getElementById('suggerimenti-box');
+            
+            // Se non c'è testo o non ci sono risultati, nascondi il box
+            if (testo.length === 0 || risultati.length === 0) {
+                box.style.display = 'none';
+                box.innerHTML = '';
+                return;
+            }
+
+            // Genera l'HTML dei suggerimenti
+            let htmlSuggerimenti = '';
+            
+            // MODIFICA: Mostriamo massimo 3 suggerimenti (prima era 5)
+            const maxSuggerimenti = risultati.slice(0, 3); 
+
+            maxSuggerimenti.forEach(ricetta => {
+                // Evidenziamo in grassetto la parte digitata
+                const regex = new RegExp(`(${testo})`, 'gi');
+                const titoloFormattato = ricetta.titolo.replace(regex, '<b>$1</b>');
+
+                // MODIFICA: Al click chiamiamo selezionaSuggerimento invece di andare alla pagina
+                htmlSuggerimenti += `
+                    <div class="suggestion-item" onclick="selezionaSuggerimento('${ricetta.id}')">
+                        ${titoloFormattato}
+                    </div>
+                `;
+            });
+
+            box.innerHTML = htmlSuggerimenti;
+            box.style.display = 'block';
+        }
+
+        // --- NUOVA FUNZIONE: SELEZIONA SUGGERIMENTO (Autocomplete) ---
+        function selezionaSuggerimento(id) {
+            // Troviamo la ricetta completa dall'ID
+            const ricetta = tutteLeRicette.find(r => r.id === id);
+            
+            if (ricetta) {
+                // 1. Scrivi il titolo nella barra di ricerca
+                const input = document.getElementById('input-ricerca');
+                input.value = ricetta.titolo;
+
+                // 2. Filtra la griglia mostrando solo questa ricetta
+                mostraRicette([ricetta]);
+
+                // 3. Nascondi il box dei suggerimenti
+                document.getElementById('suggerimenti-box').style.display = 'none';
+            }
+        }
+
+        // Chiudi i suggerimenti se clicco fuori dalla barra
+        document.addEventListener('click', function(e) {
+            const container = document.querySelector('.search-container');
+            const box = document.getElementById('suggerimenti-box');
+            if (!container.contains(e.target)) {
+                box.style.display = 'none';
+            }
+        });
+
+
+        // --- FUNZIONE GENERA FILTRI (Invariata) ---
         function generaFiltri(dati) {
             const contenitore = document.getElementById('contenitore-filtri');
             const categorieUniche = [...new Set(dati.map(r => r.categoria))].sort();
@@ -92,7 +160,7 @@
             contenitore.innerHTML = htmlBottoni;
         }
 
-        // --- FUNZIONE MOSTRA CARD ---
+        // --- FUNZIONE MOSTRA CARD (Invariata) ---
         function mostraRicette(listaRicette) {
             const container = document.getElementById('griglia-ricette');
             container.innerHTML = ''; 
@@ -129,10 +197,10 @@
             });
         }
 
-        // --- FUNZIONE FILTRO CATEGORIE ---
+        // --- FUNZIONE FILTRO CATEGORIE (Invariata) ---
         function filtraRicette(categoria, bottoneCliccato) {
-            // Svuotiamo la barra di ricerca se si clicca una categoria
             document.querySelector('.search-input').value = '';
+            document.getElementById('suggerimenti-box').style.display = 'none';
 
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
             bottoneCliccato.classList.add('active');

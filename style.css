@@ -62,7 +62,6 @@ header h1 span {
 
 /* --- HERO SECTION --- */
 .hero {
-    /* Ho scurito leggermente il gradiente per far risaltare il bianco su immagini chiare */
     background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1495521821757-a1efb6729352?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');
     background-size: cover;
     background-position: center;
@@ -97,7 +96,7 @@ header h1 span {
     text-align: center;
     margin-top: -35px;
     margin-bottom: 40px;
-    position: relative;
+    position: relative; /* Fondamentale per posizionare i suggerimenti */
     z-index: 10;
     padding: 0 10px;
 }
@@ -117,9 +116,46 @@ header h1 span {
 }
 
 .search-input:focus {
-    /* Alone ROSSO invece che giallo */
     box-shadow: 0 10px 30px rgba(229, 57, 53, 0.3); 
     transform: scale(1.02);
+}
+
+/* --- SUGGERIMENTI RICERCA (Autocomplete) - NUOVO --- */
+.suggestions-box {
+    position: absolute;
+    top: 100%; /* Appare subito sotto l'input */
+    left: 50%;
+    transform: translateX(-50%); /* Centrato perfettamente */
+    width: 100%;
+    max-width: 560px; /* Leggermente meno dell'input per effetto estetico */
+    background: white;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    z-index: 100;
+    overflow: hidden;
+    margin-top: -25px; /* Sovrapposizione leggera per nascondersi dietro l'input arrotondato */
+    padding-top: 25px; /* Padding interno per compensare il margin negativo */
+    display: none; /* Nascosto di default */
+}
+
+.suggestion-item {
+    padding: 12px 20px;
+    text-align: left;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    transition: background 0.2s;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item:hover {
+    background-color: #ffebee; /* Sfondo rosso chiaro all'hover */
+    color: var(--primary-color);
+    font-weight: 600;
 }
 
 /* --- FILTRI --- */
@@ -156,7 +192,7 @@ header h1 span {
 .filter-btn.active {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
-    color: white; /* Testo bianco su sfondo rosso per leggibilità */
+    color: white;
 }
 
 /* --- GRIGLIA RICETTE --- */
@@ -212,11 +248,11 @@ header h1 span {
 
 .card-tags { margin-bottom: 15px; }
 
-/* Tag Etichette (Aggiornate al Rosso) */
+/* Tag Etichette */
 .tag {
     display: inline-block;
-    background-color: #ffebee; /* Rosso chiarissimo */
-    color: #c62828; /* Rosso scuro */
+    background-color: #ffebee;
+    color: #c62828;
     font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -231,7 +267,7 @@ header h1 span {
     width: 100%;
     padding: 12px 0;
     background-color: var(--primary-color);
-    color: white; /* Testo bianco su bottone rosso */
+    color: white;
     text-align: center;
     text-decoration: none;
     font-weight: 700;
