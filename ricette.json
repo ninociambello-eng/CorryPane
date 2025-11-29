@@ -1,0 +1,51 @@
+[
+  {
+    "id": "carbonara",
+    "titolo": "Spaghetti alla Carbonara",
+    "descrizione": "Un classico romano, cremoso e senza panna.",
+    "img": "https://via.placeholder.com/600x400?text=Carbonara+Finale",
+    "tempo": "20 min",
+    "porzioni": "4 Persone",
+    "difficolta": "Media",
+    "categoria": "Primi",
+    "tags": ["Carne", "Tradizionale"],
+    "ingredienti": [
+      "320g Spaghetti",
+      "150g Guanciale",
+      "4 Tuorli + 1 uovo intero",
+      "Pecorino Romano",
+      "Pepe nero"
+    ],
+    "passaggi": [
+      {
+        "testo": "Tagliare il guanciale a listarelle e rosolarlo in padella fino a renderlo croccante.",
+        "img": "https://via.placeholder.com/400x300?text=Guanciale+Croccante"
+      },
+      {
+        "testo": "Nel frattempo, sbattere le uova con il pecorino e abbondante pepe fino a creare una crema densa (carbocrema).",
+        "img": ""
+      },
+      {
+        "testo": "Scolare la pasta al dente e versarla nella padella col guanciale (fuoco spento!), unire la crema e mantecare.",
+        "img": "https://via.placeholder.com/400x300?text=Mantecatura"
+      }
+    ]
+  },
+  {
+    "id": "Pasta_sugo",
+    "titolo": "Pasta al sugo",
+    "descrizione": "Il piatto più semplice e gustoso ...",
+    "img": "immagini/Pasted image.png",
+    "tempo": "10-15 min",
+    "porzioni": "2 Persone",
+    "difficolta": "Facile",
+    "categoria": "Primi",
+    "tags": ["Buono", "Caldo", "Veloce"],
+    "ingredienti": ["180-200g di pasta", "400g di passata di pomodoro", "1 spicchio d'aglio", "3-4 cucchiai di olio extravergine di oliva", "Sale q.b.", "Basilico fresco", "Un pizzico di zucchero (se il sugo risulta troppo acido)", "Parmigiano grattugiato (opzionale)"],
+    "passaggi": [
+      "<b>Soffritto</b><br>Metti 3–4 cucchiai d’olio in una padella.<br>Aggiungi aglio schiacciato o cipolla tritata.<br>Fai soffriggere a fuoco basso finché diventa dorato.",
+      "continua tu",
+      "..........."
+    ]
+  }
+]

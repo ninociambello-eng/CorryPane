@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Mio Ricettario</title>
+    <!-- Font Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>Il Mio <span>Ricettario</span></h1>
+    </header>
+
+    <!-- Copertina Hero -->
+    <div class="hero">
+        <h2>Cosa vuoi cucinare oggi?</h2>
+        <p>Trova l'ispirazione tra le nostre migliori ricette.</p>
+    </div>
+
+    <div class="container">
+        <!-- BARRA DI RICERCA -->
+        <div class="search-container">
+            <input type="text" 
+                   class="search-input" 
+                   placeholder="Cerca una ricetta (es. Carbonara, Pesce, Dolce...)" 
+                   oninput="cercaRicette(this.value)">
+        </div>
+
+        <!-- FILTRI -->
+        <div class="filters" id="contenitore-filtri"></div>
+
+        <!-- GRIGLIA RICETTE -->
+        <div class="recipe-grid" id="griglia-ricette">
+            <!-- Qui vengono mostrate le ricette -->
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2025 Il Mio Ricettario
+    </div>
+
+    <script>
+        let tutteLeRicette = []; 
+
+        // 1. Carichiamo i dati
+        fetch('ricette.json')
+            .then(response => response.json())
+            .then(data => {
+                tutteLeRicette = data; 
+                generaFiltri(tutteLeRicette);
+                mostraRicette(tutteLeRicette); 
+            })
+            .catch(error => console.error('Errore:', error));
+
+
+        // --- FUNZIONE DI RICERCA ---
+        function cercaRicette(testo) {
+            // Convertiamo tutto in minuscolo per una ricerca senza errori
+            const testoPulito = testo.toLowerCase().trim();
+
+            // Resettiamo visivamente i bottoni categoria perché stiamo facendo una ricerca libera
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // MODIFICA: Filtriamo SOLO controllando il titolo
+            const ricetteFiltrate = tutteLeRicette.filter(r => {
+                return r.titolo.toLowerCase().includes(testoPulito);
+            });
+
+            mostraRicette(ricetteFiltrate);
+        }
+
+
+        // --- FUNZIONE GENERA FILTRI ---
+        function generaFiltri(dati) {
+            const contenitore = document.getElementById('contenitore-filtri');
+            const categorieUniche = [...new Set(dati.map(r => r.categoria))].sort();
+
+            let htmlBottoni = `<button class="filter-btn active" onclick="filtraRicette('tutti', this)">Tutti</button>`;
+
+            categorieUniche.forEach(cat => {
+                if(cat) {
+                    htmlBottoni += `<button class="filter-btn" onclick="filtraRicette('${cat}', this)">${cat}</button>`;
+                }
+            });
+
+            contenitore.innerHTML = htmlBottoni;
+        }
+
+        // --- FUNZIONE MOSTRA CARD ---
+        function mostraRicette(listaRicette) {
+            const container = document.getElementById('griglia-ricette');
+            container.innerHTML = ''; 
+
+            if(listaRicette.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">
+                        <h3>Nessuna ricetta trovata 😔</h3>
+                        <p>Prova a cercare qualcos'altro o cambia categoria.</p>
+                    </div>`;
+                return;
+            }
+
+            listaRicette.forEach(ricetta => {
+                let tagsHtml = '';
+                if(ricetta.tags) {
+                    ricetta.tags.forEach(tag => {
+                        tagsHtml += `<span class="tag">${tag}</span>`;
+                    });
+                }
+
+                const card = `
+                    <div class="recipe-card">
+                        <img src="${ricetta.img}" alt="${ricetta.titolo}">
+                        <div class="card-content">
+                            <div class="card-tags">${tagsHtml}</div>
+                            <h3>${ricetta.titolo}</h3>
+                            <p>${ricetta.descrizione}</p>
+                            <a href="dettaglio.html?id=${ricetta.id}" class="button">VAI ALLA RICETTA</a>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        // --- FUNZIONE FILTRO CATEGORIE ---
+        function filtraRicette(categoria, bottoneCliccato) {
+            // Svuotiamo la barra di ricerca se si clicca una categoria
+            document.querySelector('.search-input').value = '';
+
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            bottoneCliccato.classList.add('active');
+
+            if (categoria === 'tutti') {
+                mostraRicette(tutteLeRicette);
+            } else {
+                const ricetteFiltrate = tutteLeRicette.filter(r => r.categoria === categoria);
+                mostraRicette(ricetteFiltrate);
+            }
+        }
+    </script>
+
+</body>
+</html>

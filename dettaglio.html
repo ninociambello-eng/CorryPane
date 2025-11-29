@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dettaglio Ricetta</title>
+    <!-- Importiamo gli stessi font della Home -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Il Mio <span>Ricettario</span></h1>
+    </header>
+
+    <div class="container">
+        <!-- Bottone Torna Indietro -->
+        <div class="nav-back">
+            <a href="index.html" class="btn-back">← Torna alle Ricette</a>
+        </div>
+
+        <!-- Contenuto Ricetta -->
+        <div class="recipe-detail" id="contenuto-ricetta">
+            <h2 style="text-align:center;">Caricamento ricetta...</h2>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2025 Il Mio Ricettario
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const ricettaId = params.get('id');
+
+        fetch('ricette.json')
+            .then(response => response.json())
+            .then(data => {
+                const ricetta = data.find(r => r.id === ricettaId);
+
+                if (ricetta) {
+                    document.title = ricetta.titolo;
+
+                    // Gestione Ingredienti
+                    let listaIngredienti = '';
+                    ricetta.ingredienti.forEach(ing => {
+                        listaIngredienti += `<li>${ing}</li>`;
+                    });
+
+                    // Gestione Passaggi (Testo + Immagini opzionali)
+                    let listaPassaggi = '';
+                    ricetta.passaggi.forEach(step => {
+                        if (typeof step === 'string') {
+                            // Caso semplice: solo testo
+                            listaPassaggi += `<li>${step}</li>`;
+                        } else {
+                            // Caso avanzato: Oggetto con testo e immagine
+                            let imageHtml = '';
+                            // Controlliamo se c'è un'immagine e non è vuota
+                            if (step.img && step.img.trim() !== "") {
+                                imageHtml = `<img src="${step.img}" class="step-img" alt="Passaggio">`;
+                            }
+                            listaPassaggi += `
+                                <li>
+                                    <p style="margin-bottom: 5px;">${step.testo}</p>
+                                    ${imageHtml}
+                                </li>`;
+                        }
+                    });
+
+                    // Generazione Tag
+                    let tagsHtml = '';
+                    if(ricetta.tags) {
+                        ricetta.tags.forEach(tag => tagsHtml += `<span class="tag">${tag}</span>`);
+                    }
+
+                    // Recuperiamo le porzioni (con un valore di default se manca)
+                    const porzioni = ricetta.porzioni ? ricetta.porzioni : "Non specificato";
+
+                    document.getElementById('contenuto-ricetta').innerHTML = `
+                        <div style="margin-bottom:10px;">${tagsHtml}</div>
+                        <h1>${ricetta.titolo}</h1>
+                        
+                        <!-- BARRA INFO: TEMPO | PORZIONI | DIFFICOLTA -->
+                        <p style="color:#666; margin-bottom: 20px; font-size: 0.95rem;">
+                            <strong>⏱ Tempo:</strong> ${ricetta.tempo} &nbsp;|&nbsp; 
+                            <strong>👥 Porzioni:</strong> ${porzioni} &nbsp;|&nbsp; 
+                            <strong>🔥 Difficoltà:</strong> ${ricetta.difficolta}
+                        </p>
+                        
+                        <img src="${ricetta.img}" style="width:100%; max-height:500px; object-fit:cover; border-radius: 12px; margin-bottom: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                        
+                        <div class="ingredients" style="background:#fff8e1; padding:30px; border-radius:12px; margin-bottom:40px;">
+                            <h2 style="margin-top:0; color:#b78c00;">Ingredienti</h2>
+                            <ul style="margin:0; padding-left:20px;">${listaIngredienti}</ul>
+                        </div>
+
+                        <div class="instructions">
+                            <h2>Procedimento</h2>
+                            <ol style="padding-left:20px; font-size:1.1rem;">${listaPassaggi}</ol>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('contenuto-ricetta').innerHTML = `
+                        <div style="text-align:center; padding:50px;">
+                            <h2>Ops! Ricetta non trovata.</h2>
+                            <p>Forse è stata rimossa o l'indirizzo è sbagliato.</p>
+                            <a href="index.html" class="button" style="max-width:200px; margin:20px auto;">Torna alla Home</a>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => console.error('Errore:', error));
+    </script>
+</body>
+</html>
