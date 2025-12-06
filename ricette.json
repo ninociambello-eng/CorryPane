@@ -43,6 +43,10 @@
     "tags": ["Buono", "Caldo", "Veloce"],
     "ingredienti": ["180-200g di pasta", "400g di passata di pomodoro", "1 spicchio d'aglio", "3-4 cucchiai di olio extravergine di oliva", "Sale q.b.", "Basilico fresco", "Un pizzico di zucchero (se il sugo risulta troppo acido)", "Parmigiano grattugiato (opzionale)"],
     "passaggi": [
+      {
+        "testo": "Abilità necessarie:",
+        "video": "video/video_pasta.mp4"
+      },
       "<b>Soffritto</b><br>Metti 3–4 cucchiai d’olio in una padella.<br>Aggiungi aglio schiacciato o cipolla tritata.<br>Fai soffriggere a fuoco basso finché diventa dorato.",
       "continua tu",
       "..........."
