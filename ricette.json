@@ -45,7 +45,8 @@
     "passaggi": [
       {
         "testo": "Abilità necessarie:",
-        "video": "video/video_pasta.mp4"
+        "video": "video/video_pasta.mp4",
+        "img": "immagini/pasta2.jpeg"
       },
       "<b>Soffritto</b><br>Metti 3–4 cucchiai d’olio in una padella.<br>Aggiungi aglio schiacciato o cipolla tritata.<br>Fai soffriggere a fuoco basso finché diventa dorato.",
       "continua tu",
